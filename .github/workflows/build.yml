@@ -1,0 +1,34 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: دریافت کد
+        uses: actions/checkout@v4
+
+      - name: نصب جاوا
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: نصب Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: نصب Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: ساخت APK (نسخه دیباگ)
+        run: gradle assembleDebug
+
+      - name: آپلود فایل APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: m3u-player-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
